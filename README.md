@@ -64,4 +64,16 @@ public String createProductPost(@ModelAttribute Product product, Model model) {
 }
 ```
 
+## Reflection 2
 
+#### After writing the unit tests, how do you feel?  
+I feel happy and more sure that my code works. Writing the tests helped me know what works well and what might go wrong.
+
+#### How many unit tests should be made in a class?  
+It is recommended to write as many tests as needed to cover all important parts of the class. It is not about the number, but about testing every behavior and edge case carefully.
+
+#### How can we make sure that our unit tests are enough to verify our program?  
+Using code coverage tools can show us how much of our code is being tested. However, even if we have 100% code coverage, it does not mean that the program is free of bugs. We must also check that our tests mimic real user behavior and cover unusual cases.
+
+#### What do you think about creating another functional test suite that verifies the number of items in the product list, especially if it duplicates setup code?  
+I think that adding another test suite is fine as long as it tests a new behavior. But if it has a lot of similar setup code to other tests, it might make maintenance harder. I suggest putting the common setup code into a shared base class or helper methods. This way, all test classes can reuse the same code and stay simple and clean.
