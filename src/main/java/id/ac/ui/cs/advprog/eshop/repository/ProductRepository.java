@@ -2,9 +2,7 @@ package id.ac.ui.cs.advprog.eshop.repository;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.springframework.stereotype.Repository;
-
 import id.ac.ui.cs.advprog.eshop.model.Product;
 
 @Repository
@@ -27,9 +25,9 @@ public class ProductRepository {
             }
         }
         return null;
-        }
-        
-        public Product update(Product product) {
+    }
+    
+    public Product edit(Product product) {
         Product existingProduct = findById(product.getProductId());
         if (existingProduct != null) {
             existingProduct.setProductName(product.getProductName());
@@ -37,14 +35,14 @@ public class ProductRepository {
             return existingProduct;
         }
         return null;
-        }
+    }
 
-        public Product delete(String productId) {
+    public Product delete(String productId) {
         Product product = findById(productId);
         if (product != null) {
             productData.remove(product);
             return product;
         }
         return null;
-        }
     }
+}
