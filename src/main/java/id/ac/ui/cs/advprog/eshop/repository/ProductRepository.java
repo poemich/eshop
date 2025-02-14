@@ -27,9 +27,9 @@ public class ProductRepository {
             }
         }
         return null;
-    }
-    
-    public Product update(Product product) {
+        }
+        
+        public Product update(Product product) {
         Product existingProduct = findById(product.getProductId());
         if (existingProduct != null) {
             existingProduct.setProductName(product.getProductName());
@@ -37,5 +37,14 @@ public class ProductRepository {
             return existingProduct;
         }
         return null;
+        }
+
+        public Product delete(String productId) {
+        Product product = findById(productId);
+        if (product != null) {
+            productData.remove(product);
+            return product;
+        }
+        return null;
+        }
     }
-}
