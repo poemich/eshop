@@ -17,7 +17,7 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         ProductRepository repository = new ProductRepository();
-        productService = new ProductServiceImpl();
+        productService = new ProductServiceImpl(repository);
         try {
             java.lang.reflect.Field field = ProductServiceImpl.class.getDeclaredField("productRepository");
             field.setAccessible(true);
