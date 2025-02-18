@@ -77,4 +77,15 @@ class ProductServiceTest {
         Product found = productService.findById(created.getProductId());
         assertNull(found);
     }
+
+    @Test
+    void testCreateWithExistingId() {
+        Product product = new Product();
+        product.setProductId("existing-id");
+        product.setProductName("Static ID Product");
+        product.setProductQuantity(15);
+        Product created = productService.create(product);
+
+        assertEquals("existing-id", created.getProductId());
+    }
 }
