@@ -19,17 +19,15 @@ public class ProductRepository {
     public Iterator<Product> findAll() {
         return productData.iterator();
     }
-    
-    public Product findById(String productId) {
-        for (Product product : productData) {
-            if (product.getProductId().equals(productId)) {
-                return product;
-            }
-        }
-        return null;
-        }
         
-        public Product update(Product product) {
+    public Product findById(String productId) {
+        return productData.stream()
+            .filter(product -> product.getProductId().equals(productId))
+            .findFirst()
+            .orElse(null);
+    }
+        
+    public Product update(Product product) {
         Product existingProduct = findById(product.getProductId());
         if (existingProduct != null) {
             existingProduct.setProductName(product.getProductName());
@@ -37,14 +35,14 @@ public class ProductRepository {
             return existingProduct;
         }
         return null;
-        }
+    }
 
-        public Product delete(String productId) {
+    public Product delete(String productId) {
         Product product = findById(productId);
         if (product != null) {
             productData.remove(product);
             return product;
         }
         return null;
-        }
     }
+}

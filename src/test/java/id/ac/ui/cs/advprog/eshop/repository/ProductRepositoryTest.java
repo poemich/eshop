@@ -69,4 +69,71 @@ class ProductRepositoryTest {
 
         assertFalse(productIterator.hasNext());
     }
+
+    @Test
+    void testUpdateExisting() {
+        // Create and add a product
+        Product product = new Product();
+        product.setProductId("prod-1");
+        product.setProductName("Old Name");
+        product.setProductQuantity(10);
+        productRepository.create(product);
+        
+        // Update product details
+        Product updated = new Product();
+        updated.setProductId("prod-1");
+        updated.setProductName("New Name");
+        updated.setProductQuantity(20);
+        Product result = productRepository.update(updated);
+        
+        assertNotNull(result);
+        assertEquals("New Name", result.getProductName());
+        assertEquals(20, result.getProductQuantity());
+    }
+    
+    @Test
+    void testUpdateNonExisting() {
+        Product updated = new Product();
+        updated.setProductId("non-existent");
+        updated.setProductName("Name");
+        updated.setProductQuantity(5);
+        assertNull(productRepository.update(updated));
+    }
+    
+    @Test
+    void testDeleteExisting() {
+        Product product = new Product();
+        product.setProductId("prod-2");
+        product.setProductName("Name");
+        product.setProductQuantity(30);
+        productRepository.create(product);
+        
+        Product deleted = productRepository.delete("prod-2");
+        assertNotNull(deleted);
+        // Verify product has been removed
+        assertNull(productRepository.findById("prod-2"));
+    }
+
+    @Test
+    void testDeleteNonExisting() {
+        assertNull(productRepository.delete("non-existent"));
+    }
+
+    @Test
+    void testFindByIdExisting() {
+        Product product = new Product();
+        product.setProductId("find-1");
+        product.setProductName("Find Me");
+        product.setProductQuantity(5);
+        productRepository.create(product);
+        
+        Product found = productRepository.findById("find-1");
+        assertNotNull(found);
+        assertEquals("Find Me", found.getProductName());
+    }
+    
+    @Test
+    void testFindByIdNonExisting() {
+        assertNull(productRepository.findById("non-existent-id"));
+    }
 }
