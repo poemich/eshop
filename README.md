@@ -1,5 +1,8 @@
 # eshop | Advance Programming repository by Muhammad Fadhlan Karimuddin (2306245011)
 
+### [🚀 Deployment link](https://tory-madge-poemich-3f32ba73.koyeb.app/product/)
+### [🔐 SonarQube analysis](https://sonarcloud.io/project/overview?id=poemich_eshop)
+
 ## Reflection
 
 ### 1. List the code quality issue(s) that you fixed during the exercise and explain your strategy on fixing them.
