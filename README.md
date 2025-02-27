@@ -36,3 +36,11 @@ LSP means that objects of a subclass should be able to replace objects of the pa
 - If any shared logic is needed between controllers, it can be provided via separate helper services rather than through inheritance.
 
 This change ensures that a `CarController` is not forced to follow a contract that might not suit its needs, making our codebase more robust and compliant with LSP.
+
+### 4. Interface Segregation Principle (ISP)
+
+ISP means that clients should not be forced to depend on methods they do not use. Instead, interfaces should be small and focused so that a client only needs to know about methods that are of interest.
+
+**Implemented:**
+- We have defined separate interfaces for our services. For example, the `CarService` interface contains only the car-related methods that the controllers need, while `ProductService` focuses on product operations.
+- This approach ensures that each client interacts only with the specific methods it requires.
