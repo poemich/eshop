@@ -5,7 +5,7 @@
 
 ## Reflection
 
-## 1. Reflection on SOLID Principles
+## 1. Explain what principles you apply to your project!
 
 ### 1. Single Responsibility Principle (SRP)
 
@@ -53,3 +53,111 @@ DIP states that high-level modules should not depend on low-level modules; both 
 - Created an `ICarRepository` interface to define the required methods for working with Car objects.
 - The `CarRepository` now implements `ICarRepository`.
 - The `CarServiceImpl` class now depends on the `ICarRepository` abstraction rather than a concrete repository class.
+
+## 2. Explain the advantages of applying SOLID principles to your project with examples.
+
+Applying SOLID principles brings several benefits to the project. For example:
+
+- **Easier Maintenance (SRP):**  
+  Each class having a single responsibility allows you to modify one part without impacting others.  
+  _Example:_ The `CarRepository` only handles persistence:
+  ```java
+  public class CarRepository {
+      // Responsible solely for CRUD operations on Car objects.
+      public Car create(Car car) { /* ... */ }
+      // ...other CRUD methods...
+  }
+  ```
+  
+- **Better Flexibility and Extensibility (OCP & DIP):**  
+  By using abstractions, high-level modules can be extended without altering existing code.  
+  _Example:_ `CarServiceImpl` depends on the `ICarRepository` interface:
+  ```java
+  public class CarServiceImpl implements CarService {
+      @Autowired
+      private ICarRepository carRepository; // Flexible dependency
+
+      public Car create(Car car) {
+          return carRepository.create(car);
+      }
+      // ...other methods...
+  }
+  ```
+  This design allows swapping `CarRepository` with a different implementation without changing `CarServiceImpl`.
+
+- **Improved Testability (DIP & ISP):**  
+  Decoupled components enable easier unit testing by allowing mocks of specific interfaces.  
+  _Example:_ In tests, you can mock `ICarRepository`:
+  ```java
+  when(carRepository.create(any(Car.class))).thenReturn(mockCar);
+  ```
+  
+- **Robust and Predictable Design (LSP & ISP):**  
+  With clear contracts defined by focused interfaces, substituting different implementations causes fewer surprises.  
+  _Example:_ A controller expects a service interface:
+  ```java
+  @Autowired
+  private CarService carService; // Uses only defined methods of the interface
+  ```
+  This ensures any compliant implementation works correctly with the controller.
+
+### 3. Explain the disadvantages of not applying SOLID principles to your project with examples.
+
+Not applying SOLID principles can lead to several issues in a project. For example:
+
+- **Tight Coupling (DIP Violation):**  
+  When high-level modules depend on concrete implementations, changes in low-level modules force changes throughout the code.  
+  _Example:_
+  ```java
+  // Without DIP, CarServiceImpl depends directly on a concrete CarRepository.
+  public class CarServiceImpl implements CarService {
+      @Autowired
+      private CarRepository carRepository; // Tightly coupled
+
+      public Car create(Car car) {
+          return carRepository.create(car);
+      }
+      // ...
+  }
+  // This design makes it hard to swap out or extend the persistence layer.
+  ```
+
+- **Difficult to Extend (OCP Violation):**  
+  Without using abstractions or interfaces, adding new behavior may require altering existing classes rather than simply extending them.  
+  _Example:_
+  ```java
+  // A concrete CarRepository with no extension points.
+  public class CarRepository {
+      public Car create(Car car) { /* ... */ }
+      // If new persistence logic is needed, you must change this class directly.
+  }
+  ```
+
+- **Reduced Testability (ISP/DIP Issues):**  
+  When classes are tightly coupled or have broad interfaces, unit testing becomes more complex because it is difficult to isolate modules.  
+  _Example:_
+  ```java
+  // Without proper interface segregation, a test must handle unnecessary methods.
+  public interface GeneralService {
+      void processCar(Car car);
+      void processProduct(Product product);
+  }
+  // Testing Car functionality forces you to stub or implement product methods.
+  ```
+
+- **Unreliable Substitutability (LSP Violation):**  
+  If subclasses do not strictly follow the contracts set by parent classes, substituting one for the other can result in unpredictable behavior.  
+  _Example:_
+  ```java
+  // If CarController improperly extends ProductController
+  public class CarController extends ProductController {
+      @Override
+      public String create() {
+          // Returns a view name that does not match the ProductController's contract,
+          // causing failures in parts of the system expecting a consistent behavior.
+          return "unexpectedView";
+      }
+  }
+  ```
+  
+These issues make the codebase rigid, difficult to maintain, and challenging to test, ultimately slowing development and increasing the risk of bugs.
