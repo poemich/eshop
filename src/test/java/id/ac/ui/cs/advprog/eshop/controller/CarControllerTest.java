@@ -13,13 +13,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
+import id.ac.ui.cs.advprog.eshop.config.StubViewResolverConfig;
 import id.ac.ui.cs.advprog.eshop.model.Car;
 import id.ac.ui.cs.advprog.eshop.service.CarServiceImpl;
 import id.ac.ui.cs.advprog.eshop.service.ProductService;
 
-// Set an active profile other than "test" so that CarController (annotated with @Profile("!test")) is loaded.
+@Import(StubViewResolverConfig.class)
 @WebMvcTest(CarController.class)
 public class CarControllerTest {
 
