@@ -21,7 +21,18 @@ SRP states that a class should have only one reason to change – in other words
 
 OCP means a class or module should be easy to extend without changing its existing code.
 
-**Implemented:**
+**Modified Code to implement OCP:**
 - Created an `ICarRepository` interface that defines how to work with cars.
 - The `CarRepository` now implements this interface.
 - `CarServiceImpl` depends on the `ICarRepository` abstraction instead of a concrete class.
+
+### 3. Liskov Substitution Principle (LSP)
+
+LSP means that objects of a subclass should be able to replace objects of the parent class without altering the correctness of the program.
+
+**Modified Code to implement LSP:**
+- We previously had `CarController` extend `ProductController`, which sometimes led to inconsistent behavior (like different view handling).
+- We refactored the design by removing this inheritance and creating an independent `CarController`. This controller now manages car-specific actions on its own.
+- If any shared logic is needed between controllers, it can be provided via separate helper services rather than through inheritance.
+
+This change ensures that a `CarController` is not forced to follow a contract that might not suit its needs, making our codebase more robust and compliant with LSP.
