@@ -44,3 +44,12 @@ ISP means that clients should not be forced to depend on methods they do not use
 **Implemented:**
 - We have defined separate interfaces for our services. For example, the `CarService` interface contains only the car-related methods that the controllers need, while `ProductService` focuses on product operations.
 - This approach ensures that each client interacts only with the specific methods it requires.
+
+### 5. Dependency Inversion Principle (DIP)
+
+DIP states that high-level modules should not depend on low-level modules; both should depend on abstractions. In our project, the CarServiceImpl originally depended directly on the concrete CarRepository. This created tight coupling and made it hard to swap persistence strategies.
+
+**Modified Code to implement DIP:**
+- Created an `ICarRepository` interface to define the required methods for working with Car objects.
+- The `CarRepository` now implements `ICarRepository`.
+- The `CarServiceImpl` class now depends on the `ICarRepository` abstraction rather than a concrete repository class.
