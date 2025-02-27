@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.AbstractView;
@@ -15,6 +18,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class StubViewResolverConfig {
 
     @Bean
+    @Primary
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public ViewResolver stubViewResolver() {
         return (viewName, locale) -> new AbstractView() {
             @Override
