@@ -16,3 +16,12 @@ SRP states that a class should have only one reason to change – in other words
 - **CarRepository**: This class is dedicated solely to the persistence logic for Car objects. Its responsibilities include creating, reading, updating, and deleting Car records.
 - **CarServiceImpl**: It encapsulates the business logic related to Car entities, for example, aggregating data from the repository and exposing these operations to the controllers.
 - **Controllers**: The `CarController` and `ProductController` handle web requests and responses, ensuring that HTTP routing and interaction with the service layer are kept separate from business logic and persistence.
+
+### 2. Open/Closed Principle (OCP)
+
+OCP means a class or module should be easy to extend without changing its existing code.
+
+**Implemented:**
+- Created an `ICarRepository` interface that defines how to work with cars.
+- The `CarRepository` now implements this interface.
+- `CarServiceImpl` depends on the `ICarRepository` abstraction instead of a concrete class.
