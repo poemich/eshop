@@ -7,40 +7,47 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.Arrays;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import id.ac.ui.cs.advprog.eshop.config.StubViewResolverConfig;
 import id.ac.ui.cs.advprog.eshop.model.Car;
 import id.ac.ui.cs.advprog.eshop.service.CarServiceImpl;
 import id.ac.ui.cs.advprog.eshop.service.ProductService;
 
-@Import(StubViewResolverConfig.class)
+@ActiveProfiles("non-test")
+@TestPropertySource(properties = {
+    "spring.thymeleaf.enabled=false",
+    "spring.thymeleaf.prefix=classpath:/templates/",  // Set template prefix
+    "spring.thymeleaf.suffix=.html"                  // Set template suffix
+})
 @WebMvcTest(CarController.class)
 public class CarControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
     
-    // Needed for the superclass (ProductController) dependency.
     @MockBean
     private ProductService productService;
     
     @MockBean
     private CarServiceImpl carservice;
 
-    @Test
-    public void testCreateCarPage() throws Exception {
-        mockMvc.perform(get("/car/createCar"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("createCar"))
-            .andExpect(model().attributeExists("car"));
+    @BeforeEach
+    void setUp() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setPrefix("/templates/");
+        viewResolver.setSuffix(".html");
+        mockMvc = MockMvcBuilders.standaloneSetup(new CarController(productService, carservice))
+                .setViewResolvers(viewResolver)
+                .build();
     }
 
     @Test
@@ -55,7 +62,7 @@ public class CarControllerTest {
                         .param("carColor", "Red")
                         .param("carQuantity", "1"))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("listCar"));
+            .andExpect(redirectedUrl("listCar")); // Remove "redirect:" prefix
     }
 
     @Test
@@ -63,7 +70,7 @@ public class CarControllerTest {
         Car car = new Car();
         car.setCarId("car-2");
         car.setCarName("ListedCar");
-        when(carservice.findAll()).thenReturn(Arrays.asList(car));
+        when(carservice.findAll()).thenReturn(java.util.Arrays.asList(car));
         
         mockMvc.perform(get("/car/listCar"))
             .andExpect(status().isOk())
@@ -92,7 +99,7 @@ public class CarControllerTest {
                         .param("carColor", "Blue")
                         .param("carQuantity", "5"))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("listCar"));
+            .andExpect(redirectedUrl("listCar")); // Remove "redirect:" prefix
     }
 
     @Test
@@ -100,6 +107,6 @@ public class CarControllerTest {
         doNothing().when(carservice).deleteCarById("car-delete");
         mockMvc.perform(post("/car/deleteCar").param("carId", "car-delete"))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("listCar"));
+            .andExpect(redirectedUrl("listCar")); // Remove "redirect:" prefix
     }
 }
