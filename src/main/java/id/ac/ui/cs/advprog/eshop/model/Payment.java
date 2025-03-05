@@ -1,5 +1,7 @@
 package id.ac.ui.cs.advprog.eshop.model;
 
+import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +14,6 @@ public class Payment {
     private String id;
     private String method;
     private Map<String, String> paymentData;
-    @Setter
     private String status;
 
     public Payment(String id, String method, Map<String, String> paymentData) {
@@ -22,39 +23,46 @@ public class Payment {
         this.id = id;
         this.method = method;
         this.paymentData = paymentData;
+        this.status = evaluateStatus(method, paymentData);
+    }
 
+    private String evaluateStatus(String method, Map<String, String> data) {
         switch (method) {
             case "VOUCHER_CODE":
-                String voucher = paymentData.get("voucherCode");
-                if (voucher != null && voucher.length() == 16 
-                        && voucher.startsWith("ESHOP") 
-                        && countDigits(voucher) == 8) {
-                    this.status = "SUCCESS";
-                } else {
-                    this.status = "REJECTED";
-                }
-                break;
+                return isValidVoucher(data.get("voucherCode")) ? 
+                        PaymentStatus.SUCCESS.getValue() : PaymentStatus.REJECTED.getValue();
             case "CASH_ON_DELIVERY":
-                String address = paymentData.get("address");
-                String deliveryFee = paymentData.get("deliveryFee");
-                if (address != null && !address.isEmpty() 
-                        && deliveryFee != null && !deliveryFee.isEmpty()) {
-                    this.status = "SUCCESS";
-                } else {
-                    this.status = "REJECTED";
-                }
-                break;
+                return isValidCashOnDelivery(data) ? 
+                        PaymentStatus.SUCCESS.getValue() : PaymentStatus.REJECTED.getValue();
             default:
-                this.status = "PENDING";
-                break;
+                throw new IllegalArgumentException("Invalid payment method");
         }
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    private boolean isValidVoucher(String voucher) {
+        return voucher != null 
+                && voucher.length() == 16 
+                && voucher.startsWith("ESHOP") 
+                && countDigits(voucher) == 8;
     }
 
-    // Helper method: counts digit characters in the given string.
+    private boolean isValidCashOnDelivery(Map<String, String> data) {
+        String address = data.get("address");
+        String deliveryFee = data.get("deliveryFee");
+        return address != null && !address.isEmpty() 
+                && deliveryFee != null && !deliveryFee.isEmpty();
+    }
+
+    public void setStatus(String status) {
+        if (PaymentStatus.contains(status)) {
+            this.status = status;
+        }
+        else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // Helper method: counts digit characters in a string.
     private int countDigits(String str) {
         int count = 0;
         for (char ch : str.toCharArray()) {
